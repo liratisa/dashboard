@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard de Indicadores de TI</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+        <script src="./script.js"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="page">
+            <div class="header">
+                <div class="header-left">
+                    <h1>Central de Indicadores de TI</h1>
+                    <p>Competência maio 2026 &nbsp;·&nbsp; 312 usuários ativos</p>
+                </div>
+                <span class="badge-live"><span class="dot-live"></span>Exportado em 27/05/2026</span>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <p class="kpi-label">🎫 Chamados abertos</p>
+                    <p class="kpi-value">147</p>
+                    <p class="kpi-delta"><span class="delta-up-bad">▲ +12</span>&nbsp;vs. semana passada</p>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">⏱ SLA cumprido</p>
+                    <p class="kpi-value">91<span>%</span></p>
+                    <p class="kpi-delta"><span class="delta-down-good">▲ +3%</span>&nbsp;vs. mês anterior</p>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">😊 CSAT médio</p>
+                    <p class="kpi-value">4.3<span>/5</span></p>
+                    <p class="kpi-delta">— Estável este mês</p>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">🖥 Disponibilidade</p>
+                    <p class="kpi-value">99.6<span>%</span></p>
+                    <p class="kpi-delta"><span class="delta-down-good">▲ +0.2%</span>&nbsp;vs. mês anterior</p>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="card">
+                    <p class="card-title">Volume de chamados por semana</p>
+                    <p class="card-sub">Abertos vs. encerrados — últimas 8 semanas</p>
+                    <div class="legend-row">
+                        <span class="legend-item"><span class="legend-dot" style="background: #2563eb"></span>Abertos</span>
+                        <span class="legend-item"><span class="legend-dot" style="background: #9ca3af; border: 1px dashed #6b7280"></span>Encerrados</span>
+                    </div>
+                    <div style="position: relative; width: 100%; height: 220px">
+                        <canvas id="ticketChart" role="img" aria-label="Gráfico de chamados semanais abertos e encerrados">Chamados semanais.</canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <p class="card-title">Chamados por categoria</p>
+                    <p class="card-sub">Distribuição no mês atual</p>
+                    <div class="legend-row" id="donutLegend"></div>
+                    <div style="position: relative; width: 100%; height: 200px">
+                        <canvas id="donutChart" role="img" aria-label="Distribuição de chamados por categoria">Software 35%, Hardware 28%, Acesso 22%, Rede 15%.</canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-grid">
+                <div class="card">
+                    <p class="card-title">Disponibilidade de sistemas</p>
+                    <p class="card-sub">Uptime — últimos 30 dias</p>
+                    <div id="sysRows"></div>
+                </div>
+                <div class="card">
+                    <p class="card-title">SLA por prioridade</p>
+                    <p class="card-sub">% de chamados dentro do prazo</p>
+                    <div id="slaBars"></div>
+                </div>
+                <div class="card">
+                    <p class="card-title">Satisfação dos usuários</p>
+                    <p class="card-sub">CSAT — 284 avaliações este mês</p>
+                    <p class="csat-big">4.3</p>
+                    <div class="stars">
+                        <span class="star" style="color: #b87a00">★</span>
+                        <span class="star" style="color: #b87a00">★</span>
+                        <span class="star" style="color: #b87a00">★</span>
+                        <span class="star" style="color: #b87a00">★</span>
+                        <span class="star" style="color: #d1d5db">★</span>
+                    </div>
+                    <div id="csatBars"></div>
+                </div>
+            </div>
+
+            <div class="insights">
+                <p class="insights-title">Recomendações executivas</p>
+                <div class="insights-grid">
+                    <div class="insight-card red">
+                        <p class="insight-priority">🔴 Alta prioridade</p>
+                        <p class="insight-heading">SLA P1 em 88% — gap crítico</p>
+                        <p class="insight-body">12% dos chamados críticos fora do prazo. Revisar fluxo de escalonamento e plantão fora do horário comercial.</p>
+                    </div>
+                    <div class="insight-card red">
+                        <p class="insight-priority">🔴 Alta prioridade</p>
+                        <p class="insight-heading">Backup & Storage em 97.4%</p>
+                        <p class="insight-body">~6,5h de indisponibilidade no mês. Avaliar redundância ou migração para solução em nuvem híbrida.</p>
+                    </div>
+                    <div class="insight-card yellow">
+                        <p class="insight-priority">🟡 Média prioridade</p>
+                        <p class="insight-heading">Backlog crescendo +12/semana</p>
+                        <p class="insight-body">Chamados abertos superam fechamentos há 3 semanas. Risco de comprometer SLA P2 em breve.</p>
+                    </div>
+                    <div class="insight-card yellow">
+                        <p class="insight-priority">🟡 Média prioridade</p>
+                        <p class="insight-heading">E-mail em 98.8% — atenção</p>
+                        <p class="insight-body">Sistema de alta visibilidade. Verificar capacidade, atualizações pendentes e licenciamento.</p>
+                    </div>
+                    <div class="insight-card green">
+                        <p class="insight-priority">🟢 Oportunidade</p>
+                        <p class="insight-heading">CSAT com potencial para 4.6+</p>
+                        <p class="insight-body">21% de avaliações ≤3. Pesquisa qualitativa pode revelar padrões corrigíveis de atendimento.</p>
+                    </div>
+                    <div class="insight-card green">
+                        <p class="insight-priority">🟢 Positivo</p>
+                        <p class="insight-heading">Sistemas críticos estáveis</p>
+                        <p class="insight-body">ERP a 99.9% e AD a 100%. SLA P3 e P4 excelentes. Base sólida para crescimento da operação.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span>Dashboard de TI · Exportado em 27/05/2026</span>
+                <span>Operação: 312 usuários · Grande porte</span>
+            </div>
+        </div>
+
+        <script>
+            const systems = [
+                { name: "ERP Principal", pct: 99.9 },
+                { name: "Active Directory", pct: 100 },
+                { name: "VPN Corporativa", pct: 99.2 },
+                { name: "E-mail / Exchange", pct: 98.8 },
+                { name: "ITSM (ServiceDesk)", pct: 99.6 },
+                { name: "Backup & Storage", pct: 97.4 },
+            ];
+            const sysContainer = document.getElementById("sysRows");
+            systems.forEach((s) => {
+                const c = s.pct >= 99 ? "#16A34A" : s.pct >= 98 ? "#CA8A04" : "#DC2626";
+                sysContainer.innerHTML += `<div class="sys-row">
+    <span class="sys-name"><span class="sys-dot" style="background:${c}"></span>${s.name}</span>
+    <span class="sys-pct">${s.pct}%</span>
+  </div>`;
+            });
+
+            const slas = [
+                { label: "P1 — Crítico (2h)", pct: 88 },
+                { label: "P2 — Alto (8h)", pct: 93 },
+                { label: "P3 — Médio (24h)", pct: 96 },
+                { label: "P4 — Baixo (72h)", pct: 99 },
+            ];
+            const slaContainer = document.getElementById("slaBars");
+            slas.forEach((s) => {
+                const c = s.pct >= 95 ? "#2563EB" : s.pct >= 90 ? "#CA8A04" : "#DC2626";
+                slaContainer.innerHTML += `<div class="sla-wrap">
+    <div class="sla-header"><span>${s.label}</span><strong>${s.pct}%</strong></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${s.pct}%;background:${c}"></div></div>
+  </div>`;
+            });
+
+            const csatData = [
+                { stars: 5, pct: 52, color: "#16A34A" },
+                { stars: 4, pct: 27, color: "#65A30D" },
+                { stars: 3, pct: 11, color: "#CA8A04" },
+                { stars: 2, pct: 6, color: "#EA580C" },
+                { stars: 1, pct: 4, color: "#DC2626" },
+            ];
+            const csatContainer = document.getElementById("csatBars");
+            csatData.forEach((c) => {
+                csatContainer.innerHTML += `<div class="csat-row">
+    <span style="width:20px;text-align:right">${c.stars}★</span>
+    <div class="csat-track"><div class="csat-fill" style="width:${c.pct}%;background:${c.color}"></div></div>
+    <span style="width:30px;text-align:right">${c.pct}%</span>
+  </div>`;
+            });
+
+            new Chart(document.getElementById("ticketChart"), {
+                type: "bar",
+                data: {
+                    labels: ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"],
+                    datasets: [
+                        { label: "Abertos", data: [132, 118, 145, 161, 138, 152, 143, 147], backgroundColor: "#2563EB" },
+                        {
+                            label: "Encerrados",
+                            data: [124, 130, 141, 155, 149, 139, 138, 131],
+                            backgroundColor: "transparent",
+                            borderColor: "#6B7280",
+                            borderWidth: 1.5,
+                            borderDash: [4, 3],
+                            type: "line",
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointBackgroundColor: "#6B7280",
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: "#6B7280", font: { size: 11 } } },
+                        y: { grid: { color: "rgba(0,0,0,0.05)" }, ticks: { color: "#6B7280", font: { size: 11 } } },
+                    },
+                },
+            });
+
+            const donutColors = ["#2563EB", "#0891B2", "#7C3AED", "#9CA3AF"];
+            const donutLabels = ["Software 35%", "Hardware 28%", "Acesso 22%", "Rede 15%"];
+            const legend = document.getElementById("donutLegend");
+            donutLabels.forEach((l, i) => {
+                legend.innerHTML += `<span class="legend-item"><span class="legend-dot" style="background:${donutColors[i]}"></span>${l}</span>`;
+            });
+            new Chart(document.getElementById("donutChart"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Software", "Hardware", "Acesso", "Rede"],
+                    datasets: [{ data: [35, 28, 22, 15], backgroundColor: donutColors, borderWidth: 0, hoverOffset: 4 }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "68%",
+                    plugins: { legend: { display: false } },
+                },
+            });
+        </script>
+    </body>
+</html>
