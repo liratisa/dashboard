@@ -73,6 +73,7 @@ app.get("/api/csat", async (request, response) => {
     }
 });
 
+app.get("/api/users", async (request, response) => {});
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });

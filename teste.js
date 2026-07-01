@@ -1,20 +1,77 @@
-const arr = [5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0];
+require("dotenv").config();
 
-const total = arr.length;
+const fs = require("node:fs");
 
-const obj = arr.reduce((acc, curr) => {
-    acc[curr] = (acc[curr] || 0) + 1;
-    return acc;
-}, {});
+async function getAllUsers() {
+    const allRows = [];
 
-const newObj = Object.entries(obj).map(([rating, count]) => ({
-    rating: rating,
-    count: count,
-    pct: parseFloat(((count / total) * 100).toFixed(1)),
-}));
-const percentages = {};
-for (const item in obj) {
-    percentages[item] = ((obj[item] / total) * 100).toFixed(2);
+    let total = 0;
+    let offset = 0;
+    let limit = 2000;
+
+    while (total !== 1) {
+        const res = await fetch(`${process.env.METABASE_URL}/dataset/`, {
+            method: "POST",
+            headers: { "X-API-Key": `${process.env.METABASE_KEY}`, "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify({
+                database: 6,
+                type: "query",
+                parameters: [],
+                query: {
+                    "source-table": 162,
+                    filter: [
+                        "and",
+                        [
+                            "=",
+                            [
+                                "field",
+                                4428,
+                                {
+                                    "base-type": "type/Boolean",
+                                },
+                            ],
+                            true,
+                        ],
+                        [
+                            "between",
+                            [
+                                "field",
+                                4447,
+                                {
+                                    "base-type": "type/Integer",
+                                },
+                            ],
+                            offset,
+                            limit,
+                        ],
+                    ],
+                },
+            }),
+        });
+
+        const data = await res.json();
+        const rows = data.data?.rows ?? [];
+
+        total = rows.length;
+        console.log(data.row_count, offset, limit);
+        const id = rows.map((data) => Number(data[0]));
+
+        allRows.push(...rows);
+
+        offset = id.at(-1);
+        limit = limit + 2000;
+    }
+
+    // const str = JSON.stringify(allRows);
+
+    // fs.writeFile("rows.json", str, (err) => {
+    //     if (err) {
+    //         console.error(err);
+    //     } else {
+    //         // file written successfully
+    //     }
+    // });
+    console.log(allRows.length);
 }
 
-console.log(newObj);
+getAllUsers();
