@@ -73,7 +73,7 @@ app.get("/api/csat", async (request, response) => {
     }
 });
 
-app.get("api/users", async (request, response) => {
+app.get("/api/users", async (request, response) => {
     try {
         const allRows = [];
 
