@@ -1,8 +1,3 @@
-const exportDate = document.querySelector(".dot-live");
-const today = new Date().getDate();
-
-exportDate.innerText = `Exportado em ${today}`;
-
 async function getTicketSatisfaction() {
     try {
         const res = await fetch("/api/csat");
@@ -34,4 +29,18 @@ async function getTicketSatisfaction() {
     }
 }
 
+async function getAllUsers() {
+    try {
+        const res = await fetch("/api/users");
+        const data = await res.json();
+        const total = data.totalUsers;
+        const totalUsers = document.querySelector(".total-users");
+
+        if (totalUsers) totalUsers.innerText = `Total de ${total} usuários ativos`;
+    } catch (err) {
+        console.error("Erro ao carregar USUÁRIOS:", err);
+    }
+}
+
+getAllUsers();
 getTicketSatisfaction();

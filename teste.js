@@ -1,6 +1,16 @@
 require("dotenv").config();
 
-const fs = require("node:fs");
+//const fs = require("node:fs");
+
+// const str = JSON.stringify(allRows);
+
+// fs.writeFile("rows.json", str, (err) => {
+//     if (err) {
+//         console.error(err);
+//     } else {
+//         // file written successfully
+//     }
+// });
 
 async function getAllUsers() {
     const allRows = [];
@@ -53,25 +63,18 @@ async function getAllUsers() {
         const rows = data.data?.rows ?? [];
 
         total = rows.length;
-        console.log(data.row_count, offset, limit);
-        const id = rows.map((data) => Number(data[0]));
 
-        allRows.push(...rows);
+        const id = rows.map((data) => Number(data[0]));
 
         offset = id.at(-1);
         limit = limit + 2000;
+
+        allRows.push(...id);
     }
 
-    // const str = JSON.stringify(allRows);
+    const totalUsers = new Set(allRows).size;
 
-    // fs.writeFile("rows.json", str, (err) => {
-    //     if (err) {
-    //         console.error(err);
-    //     } else {
-    //         // file written successfully
-    //     }
-    // });
-    console.log(allRows.length);
+    console.log(totalUsers);
 }
 
 getAllUsers();
